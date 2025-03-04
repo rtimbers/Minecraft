@@ -6,60 +6,29 @@ This repository contains scripts to deploy a highly available Minecraft server i
 
 The deployment creates a fault-tolerant Minecraft server environment with the following components:
 
-```
-                                  +-------------------+
-                                  |                   |
-                                  |  Azure Traffic    |
-                                  |    Manager        |
-                                  |                   |
-                                  +--------+----------+
-                                           |
-                                           v
-              +------------------------+---+---+------------------------+
-              |                        |       |                        |
-              v                        v       v                        v
-    +-----------------+      +-----------------+      +-----------------+
-    |                 |      |                 |      |                 |
-    | Primary Zone 1  |      | Primary Zone 2  |      |   Secondary     |
-    | Container       |      | Container       |      |   Region        |
-    | Instance        |      | Instance        |      |   Container     |
-    |                 |      |                 |      |                 |
-    +-----------------+      +-----------------+      +-----------------+
-              |                        |                        |
-              |                        |                        |
-              +------------------------+------------------------+
-                                       |
-                                       v
-                           +-----------------------+
-                           |                       |
-                           |  Zone-Redundant       |
-                           |  Storage (ZRS)        |
-                           |                       |
-                           +-----------+-----------+
-                                       |
-                                       v
-                           +-----------------------+
-                           |                       |
-                           |  Recovery Services    |
-                           |  Vault (Backups)      |
-                           |                       |
-                           +-----------------------+
-                                       |
-                                       v
-                           +-----------------------+
-                           |                       |
-                           |  Log Analytics        |
-                           |  Workspace            |
-                           |                       |
-                           +-----------------------+
-                                       |
-                                       v
-                           +-----------------------+
-                           |                       |
-                           |  Azure Function       |
-                           |  (Auto-scaling)       |
-                           |                       |
-                           +-----------------------+
+```mermaid
+graph TD
+    TM[Azure Traffic Manager] --> PZ1[Primary Zone 1 Container Instance]
+    TM --> PZ2[Primary Zone 2 Container Instance]
+    TM --> SR[Secondary Region Container Instance]
+    
+    PZ1 --> ZRS[Zone-Redundant Storage]
+    PZ2 --> ZRS
+    SR --> ZRS
+    
+    ZRS --> RSV[Recovery Services Vault]
+    RSV --> LAW[Log Analytics Workspace]
+    LAW --> AF[Azure Function - Auto-scaling]
+    
+    classDef azure fill:#0072C6,stroke:#0072C6,color:white;
+    classDef storage fill:#7FBA00,stroke:#7FBA00,color:white;
+    classDef compute fill:#F25022,stroke:#F25022,color:white;
+    classDef monitoring fill:#FFB900,stroke:#FFB900,color:black;
+    
+    class TM,LAW,AF azure;
+    class ZRS,RSV storage;
+    class PZ1,PZ2,SR compute;
+    class LAW,AF monitoring;
 ```
 
 ## Key Features
@@ -141,11 +110,5 @@ View auto-scaling activity:
 2. Monitor → Logs to see scaling decisions
 3. To adjust scaling parameters, modify the application settings in the Function App
 
-## Implemented Enhancements
-
-The following enhancements have been implemented:
-- ✅ Auto-scaling based on player count
-- ✅ Comprehensive logging solution
-- ✅ Enhanced monitoring with a custom dashboard
 
 
