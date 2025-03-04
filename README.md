@@ -146,11 +146,6 @@ View auto-scaling activity:
 The following enhancements have been implemented:
 - ✅ Auto-scaling based on player count
 - ✅ Comprehensive logging solution
-- ✅ Enhanced monitoring with custom dashboard
+- ✅ Enhanced monitoring with a custom dashboard
 
-## Future Enhancements
 
-Potential improvements to consider:
-- Add Azure Front Door for global load balancing and WAF protection
-- Enhance security with network isolation
-- Add disaster recovery automation 
